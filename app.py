@@ -60,9 +60,8 @@ with st.sidebar:
                 st.rerun()
         if vector_db:
             try:
-                index_size = vector_db.index.ntotal
-                st.success("✅ Knowledge Base loaded")
-                st.metric("Total Embeddings", f"{index_size:,}")
+                new_index_size = vector_db.index.ntotal
+                st.metric("Additional Embeddings", f"{new_index_size - index_size:,}")
             except:
                 st.info("Knowledge Base exists")
         else:
