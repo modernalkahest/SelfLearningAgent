@@ -58,6 +58,16 @@ with st.sidebar:
                 st.session_state.query = past_query
                 st.session_state.result = None
                 st.rerun()
+        if vector_db:
+            try:
+                index_size = vector_db.index.ntotal
+                st.success("✅ Knowledge Base loaded")
+                st.metric("Total Embeddings", f"{index_size:,}")
+            except:
+                st.info("Knowledge Base exists")
+        else:
+            st.warning("⚠️ No Knowledge Base yet")
+            st.caption("Will be created after first search")
 
 # =============================
 # HERO
