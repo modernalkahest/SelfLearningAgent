@@ -6,3 +6,6 @@ langchain-tavily
 langchain-text-splitters 
 faiss-cpu 
 python-dotenv
+numpy==1.26.4
+scikit-learn
+nltk

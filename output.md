@@ -1,20 +1,37 @@
-## Answer
+I couldn’t retrieve a reliable silver-price source for **Bangalore today** from the available knowledge base. The results returned were unrelated, so I don’t want to guess and give you a wrong live price.
 
-Based on the retrieved salary data, the closest available estimate for an **AI Platform Engineer in India with 6+ years of experience** is about **₹14.0 lakh per year median/average**.
+## What I can say
+To check the **current silver rate in Bangalore**, verify on a live bullion/jewellery source such as:
 
-A few caveats:
-- The retrieved result gives an **overall India salary figure for “AI Platform Engineer”** rather than a clean salary breakout specifically for **6+ years**.
-- One snippet mentions **4–6 years = ₹3L/yr in Bengaluru**, but that appears to be based on a very limited submission and is likely not representative.
-- Another source gives a broader **AI Engineer** range in India of **₹6L–₹50L per year**, suggesting that **6+ years** could vary significantly by company, city, and specialization.
+- Goodreturns silver rate page: https://www.goodreturns.in/silver-rates/bangalore.html
+- BankBazaar silver rate page: https://www.bankbazaar.com/silver-rate-bangalore.html
+- Livemint markets: https://www.livemint.com/market
+- MCX India silver futures: https://www.mcxindia.com/
 
-So the **best supported estimate from the available results** is:
+## Is it wise to buy silver today and sell later?
+**Maybe, but only if your horizon is medium-to-long term and you accept price volatility.**
 
-**Median salary estimate: ~₹14 lakh per annum in India**
+### Silver can make sense if:
+- you want diversification beyond gold/equity
+- you have a **1–3+ year** horizon
+- you expect support from industrial demand, inflation hedging, or rupee weakness
 
-## Sources
+### Be careful because:
+- silver is **more volatile than gold**
+- local retail buying includes **making charges / dealer spread / GST**, which can reduce resale profit
+- short-term trading is hard unless you track global prices, USD, and MCX trends
 
-1. **Ai Platform Engineer (May, 2026) - Salaries - Glassdoor**  
-   URL: https://www.glassdoor.co.in/Salaries/ai-platform-engineer-salary-SRCH_KO0,20.htm
+## Practical view
+- **For investment:** silver ETFs, sovereign-style market products, or exchange-traded routes are usually cleaner than jewellery/silver articles
+- **For physical silver:** buy bars/coins only from reputed dealers and compare buyback terms
+- **For short-term resale:** often **not ideal** because spreads eat into returns
+- **For gradual accumulation:** SIP-style buying during dips is safer than lump-sum timing
 
-2. **AI Engineer Salary in India 2026: Trends, Insights & Earnings Guide**  
-   URL: https://intellipaat.com/blog/ai-engineer-salary-in-india/
+## Simple rule of thumb
+- **Good idea:** if you are buying as part of a diversified portfolio and can wait
+- **Not a great idea:** if you want a quick flip for profit in the near term
+
+If you want, I can also help you evaluate **whether silver looks attractive right now** based on:
+1. your budget,  
+2. holding period, and  
+3. whether you want **physical silver vs ETF vs MCX**.
