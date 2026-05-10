@@ -20,9 +20,12 @@ from langchain.chat_models import init_chat_model
 from langchain_text_splitters import (
     RecursiveCharacterTextSplitter
 )
+import streamlit as st
+
+os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+os.environ["TAVILY_API_KEY"] = st.secrets["TAVILY_API_KEY"]
 
 load_dotenv()
-
 MODEL = "gpt-5.4"
 MAX_ITERATIONS = 6
 
@@ -30,7 +33,7 @@ FAISS_INDEX_PATH = "faiss_index"
 
 # FAISS uses distance
 # LOWER = better
-SIMILARITY_THRESHOLD = 0.75
+SIMILARITY_THRESHOLD = 0.6
 MIN_RELEVANT_DOCS = 2
 
 # Embeddings
@@ -57,28 +60,45 @@ tavily_extract = TavilyExtract(
     include_images=False
 )
 
+# Global cache for vector database
+_vector_db_cache = None
 
-def load_vector_db():
+
+def get_vector_db():
     """
-    Load existing FAISS index if available.
+    Get or load the vector database (singleton pattern).
+    Ensures we always work with the same instance.
     """
+    global _vector_db_cache
+    
+    if _vector_db_cache is None:
+        if os.path.exists(FAISS_INDEX_PATH):
+            _vector_db_cache = FAISS.load_local(
+                FAISS_INDEX_PATH,
+                embeddings,
+                allow_dangerous_deserialization=True
+            )
+            print("Loaded existing FAISS index from disk")
+    
+    return _vector_db_cache
 
-    if os.path.exists(FAISS_INDEX_PATH):
 
-        return FAISS.load_local(
-            FAISS_INDEX_PATH,
-            embeddings,
-            allow_dangerous_deserialization=True
-        )
-
-    return None
+def save_vector_db(vector_db):
+    """
+    Save and cache the vector database.
+    Ensures disk and memory stay in sync.
+    """
+    global _vector_db_cache
+    
+    vector_db.save_local(FAISS_INDEX_PATH)
+    _vector_db_cache = vector_db
+    print(f"Saved FAISS index to {FAISS_INDEX_PATH}")
 
 
 def get_doc_id(text: str) -> str:
     """
     Stable hash for deduplication.
     """
-
     return hashlib.md5(
         text.encode()
     ).hexdigest()
@@ -92,7 +112,6 @@ def has_relevant_knowledge(
     Check if vector DB already has
     highly relevant information.
     """
-
     if not vector_db:
         return False
 
@@ -143,15 +162,13 @@ def embed_search_results(query: str) -> str:
     Search Tavily and embed
     missing information into FAISS.
     """
-
-    vector_db = load_vector_db()
+    vector_db = get_vector_db()
 
     # FIRST: Check vector DB
     if has_relevant_knowledge(
         vector_db,
         query
     ):
-
         return (
             "Relevant information already "
             "exists in vector database. "
@@ -323,23 +340,23 @@ def embed_search_results(query: str) -> str:
     # -----------------------------------
 
     if vector_db:
-
+        # Add to existing index
         vector_db.add_documents(
             split_docs
         )
-
+        print(f"Added {len(split_docs)} chunks to existing FAISS index")
     else:
-
+        # Create new index
         vector_db = (
             FAISS.from_documents(
                 split_docs,
                 embeddings
             )
         )
+        print(f"Created new FAISS index with {len(split_docs)} chunks")
 
-    vector_db.save_local(
-        FAISS_INDEX_PATH
-    )
+    # Save the updated index
+    save_vector_db(vector_db)
 
     return (
         f"Stored "
@@ -357,8 +374,7 @@ def search_vector_db(
     Search vector database using
     semantic retrieval.
     """
-
-    vector_db = load_vector_db()
+    vector_db = get_vector_db()
 
     if not vector_db:
 
@@ -468,6 +484,8 @@ RULES:
 
 - Minimize Tavily usage
 - Avoid repeated web searches
+- if you using web search make sure that you update the vector db with the new information 
+and try to use the vector db again before searching again
 - Prefer vector DB memory
 - Always cite source URLs
 - Return clean markdown
@@ -550,7 +568,7 @@ RULES:
                     f"Tool failed: {e}"
                 )
 
-            print(result)
+            #print(result)
 
             messages.append(
                 ToolMessage(

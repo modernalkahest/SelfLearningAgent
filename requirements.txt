@@ -9,3 +9,4 @@ python-dotenv
 numpy==1.26.4
 scikit-learn
 nltk
+streamlit
