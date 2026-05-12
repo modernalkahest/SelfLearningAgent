@@ -26,7 +26,7 @@ os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 os.environ["TAVILY_API_KEY"] = st.secrets["TAVILY_API_KEY"]
 
 load_dotenv()
-MODEL = "gpt-oss-120b"
+MODEL = "gpt-5-nano-2025-08-07"
 MAX_ITERATIONS = 6
 
 FAISS_INDEX_PATH = "faiss_index"
