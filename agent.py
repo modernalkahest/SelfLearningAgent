@@ -449,7 +449,7 @@ def search_vector_db(
         formatted_results
     )
 
-
+@traceable(name="agent")
 def agent(query: str) -> str:
 
     tools_list = [
