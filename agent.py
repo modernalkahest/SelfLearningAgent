@@ -21,9 +21,14 @@ from langchain_text_splitters import (
     RecursiveCharacterTextSplitter
 )
 import streamlit as st
+from langsmith import traceable
 
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 os.environ["TAVILY_API_KEY"] = st.secrets["TAVILY_API_KEY"]
+os.environ["LANGSMITH_API_KEY"] = st.secrets["LANGSMITH_API_KEY"]
+os.environ["LANGSMITH_ENDPOINT"] = st.secrets["LANGSMITH_ENDPOINT"]
+os.environ["LANGSMITH_TRACING"] = st.secrets["LANGSMITH_TRACING"]
+os.environ["LANGSMITH_PROJECT"] = st.secrets["LANGSMITH_PROJECT"]
 
 load_dotenv()
 MODEL = "gpt-5-nano-2025-08-07"
@@ -157,6 +162,7 @@ def has_relevant_knowledge(
 
 
 @tool
+@traceable(name="embed_search_results")
 def embed_search_results(query: str) -> str:
     """
     Search Tavily and embed
@@ -367,6 +373,7 @@ def embed_search_results(query: str) -> str:
 
 
 @tool
+@traceable(name="search_vector_db")
 def search_vector_db(
     query: str
 ) -> str:
