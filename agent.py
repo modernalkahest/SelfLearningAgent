@@ -181,18 +181,21 @@ def query_decomposer(query: str) -> str:
                 """
 
     response = query_decomposer_llm.invoke(prompt)
-
-    # ChatOpenAI returns AIMessage
     text = response.content
-
-    # Convert into list
-    sub_queries = [
-        line.strip().split(". ", 1)[1]
-        for line in text.split("\n")
-        if ". " in line
-    ]
-
-    return sub_queries
+    
+    # Parse the numbered list into a clean list of queries
+    queries = []
+    for line in text.strip().split('\n'):
+        line = line.strip()
+        if line:
+            # Remove numbering (e.g., "1. ", "2. ", etc.)
+            if line[0].isdigit() and '.' in line:
+                query_text = line.split('.', 1)[1].strip()
+                queries.append(query_text)
+            else:
+                queries.append(line)
+    
+    return queries
 
 
 @tool
