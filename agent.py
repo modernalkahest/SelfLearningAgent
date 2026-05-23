@@ -22,8 +22,7 @@ from langchain_text_splitters import (
 )
 import streamlit as st
 from langsmith import traceable
-from openai import OpenAI
-
+from langchain_openai import ChatOpenAI
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 os.environ["TAVILY_API_KEY"] = st.secrets["TAVILY_API_KEY"]
 os.environ["LANGSMITH_API_KEY"] = st.secrets["LANGSMITH_API_KEY"]
@@ -45,7 +44,7 @@ MIN_RELEVANT_DOCS = 2
 # Embeddings
 embeddings = OpenAIEmbeddings(model='text-embedding-3-small')
 
-query_decomposer_llm = OpenAI(model='gpt-5-mini-2025-08-07')
+query_decomposer_llm = ChatOpenAI(model='gpt-5-mini')
 # Better chunking
 splitter = RecursiveCharacterTextSplitter(
     chunk_size=1000,
@@ -178,15 +177,21 @@ def query_decomposer(query: str) -> str:
                 1. sub-query 1 ...
                 2. sub-query 2 ...
                 3. sub-query 3 ...
-                (Only return the sub-queries, no explanations.)"""
-    response = query_decomposer_llm(prompt)
-    
-    # converting the string response into a list of sub-queries
+                (Only return the sub-queries, no explanations.)
+                """
+
+    response = query_decomposer_llm.invoke(prompt)
+
+    # ChatOpenAI returns AIMessage
+    text = response.content
+
+    # Convert into list
     sub_queries = [
         line.strip().split(". ", 1)[1]
-        for line in response.split("\n")
+        for line in text.split("\n")
         if ". " in line
     ]
+
     return sub_queries
 
 
