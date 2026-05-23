@@ -22,6 +22,7 @@ from langchain_text_splitters import (
 )
 import streamlit as st
 from langsmith import traceable
+from openai import OpenAI
 
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 os.environ["TAVILY_API_KEY"] = st.secrets["TAVILY_API_KEY"]
@@ -42,8 +43,9 @@ SIMILARITY_THRESHOLD = 0.6
 MIN_RELEVANT_DOCS = 2
 
 # Embeddings
-embeddings = OpenAIEmbeddings()
+embeddings = OpenAIEmbeddings(model='text-embedding-3-small')
 
+query_decomposer_llm = OpenAI(model='gpt-5-mini-2025-08-07')
 # Better chunking
 splitter = RecursiveCharacterTextSplitter(
     chunk_size=1000,
@@ -159,6 +161,33 @@ def has_relevant_knowledge(
         return True
 
     return False
+
+
+@tool
+@traceable(name="query decomposer for complex queries")
+def query_decomposer(query: str) -> str:
+    """
+    Decompose complex queries into simpler sub-queries.
+    This can help improve retrieval for multi-faceted questions.
+    """
+    prompt = f"""Decompose the following user query into simpler sub-queries that can be used for information retrieval.
+
+                User query: {query}
+
+                Output format:
+                1. sub-query 1 ...
+                2. sub-query 2 ...
+                3. sub-query 3 ...
+                (Only return the sub-queries, no explanations.)"""
+    response = query_decomposer_llm(prompt)
+    
+    # converting the string response into a list of sub-queries
+    sub_queries = [
+        line.strip().split(". ", 1)[1]
+        for line in response.split("\n")
+        if ". " in line
+    ]
+    return sub_queries
 
 
 @tool
@@ -454,7 +483,8 @@ def agent(query: str) -> str:
 
     tools_list = [
         search_vector_db,
-        embed_search_results
+        embed_search_results,
+        query_decomposer
     ]
 
     tools_dict = {
@@ -488,7 +518,7 @@ WORKFLOW:
 4. Then answer the user
 
 RULES:
-
+- If the query is complex, use query_decomposer to break it down into simpler sub-queries and then search each sub-query in the vector DB. Aggregate results to answer the original query.
 - Minimize Tavily usage
 - Avoid repeated web searches
 - if you using web search make sure that you update the vector db with the new information 
