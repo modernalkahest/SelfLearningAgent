@@ -164,7 +164,7 @@ def has_relevant_knowledge(
 
 @tool
 @traceable(name="query decomposer for complex queries")
-def query_decomposer(query: str) -> str:
+def query_decomposer(query: str) -> list[str]:
     """
     Decompose complex queries into simpler sub-queries.
     This can help improve retrieval for multi-faceted questions.
